@@ -3,16 +3,16 @@ defmodule MarsRoverTest do
   doctest MarsRover
 
   test "return a single robots final position and orientation given one command" do
-    assert MarsRover.update_position([1, 1, :south], "L", 2, 2) == [1, 1, :east]
+    assert MarsRover.final_state([1, 1, :south], "L", 2, 2) == {[1, 1, :east], :not_lost}
   end
 
   test "return a single robots final position and orientation given multiple commands" do
-    assert MarsRover.update_position([2, 3, :east], "LFRFF", 5, 5) == [4, 4, :east]
-    assert MarsRover.update_position([2, 3, :north], "FLLFR", 5, 5) == [2, 3, :west]
+    assert MarsRover.final_state([2, 3, :east], "LFRFF", 5, 5) == {[4, 4, :east], :not_lost}
+    assert MarsRover.final_state([2, 3, :north], "FLLFR", 5, 5) == {[2, 3, :west], :not_lost}
   end
 
-  test "returns 'LOST' if robots final state is off the grid" do
-    assert MarsRover.update_position([0, 2, :north], "FFLFRFF", 4, 8) == "LOST"
-    assert MarsRover.update_position([1, 0, :south], "FFRLF", 4, 8) == "LOST"
+  test "returns lost with final position if robots falls off Mars" do
+    assert MarsRover.final_state([0, 2, :north], "FFLFRFF", 4, 8) == {[0, 4, :west], :lost}
+    assert MarsRover.final_state([1, 0, :south], "FFRLF", 4, 8) == {[1, 0, :south], :lost}
   end
 end

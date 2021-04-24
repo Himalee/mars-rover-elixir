@@ -1,26 +1,43 @@
 defmodule MarsRover do
 
-  def update_position([x_coordinate, y_coordinate, orientation], movement_commands, x_axis, y_axis) do
-    [final_x_coordinate, final_y_coordinate, final_orientation] = final_state([x_coordinate, y_coordinate, orientation], movement_commands)
-    if off_grid?(final_x_coordinate, final_y_coordinate, x_axis, y_axis) do
-      "LOST"
-    else
-      [final_x_coordinate, final_y_coordinate, final_orientation]
-    end
-  end
-
-  defp final_state([x_coordinate, y_coordinate, orientation], movement_commands) do
+  def final_state([x, y, orientation], movement_commands, x_axis, y_axis) do
     commands = String.split(movement_commands, "", trim: true)
-    Enum.reduce(commands, [x_coordinate, y_coordinate, orientation], fn command, [x_coordinate, y_coordinate, orientation] ->
-      case command do
-        "L" -> Move.rotate_left([x_coordinate, y_coordinate, orientation])
-        "F" -> Move.move_forward([x_coordinate, y_coordinate, orientation])
-        "R" -> Move.rotate_right([x_coordinate, y_coordinate, orientation])
+    initial_result = :not_lost
+    Enum.reduce_while(commands, {[x, y, orientation], initial_result}, fn command, {[x, y, orientation], _result} ->
+      if is_move_valid?([x, y, orientation], command, x_axis, y_axis) do
+        {:cont, case command do
+          "L" -> {Move.rotate_left([x, y, orientation]), :not_lost}
+          "F" -> {Move.move_forward([x, y, orientation]), :not_lost}
+          "R" -> {Move.rotate_right([x, y, orientation]), :not_lost}
+        end
+        }
+      else
+        {:halt, {[x, y, orientation], :lost}}
       end
     end)
   end
 
-  defp off_grid?(x_coordinate, y_coordinate, x_axis, y_axis) do
-    x_coordinate < 0 || y_coordinate < 0 || x_coordinate > x_axis || y_coordinate > y_axis
+  defp is_move_valid?([x, y, orientation], command, x_axis, y_axis) do
+    result = case command do
+      "L" -> [next_x, next_y, _] = Move.rotate_left([x, y, orientation])
+             result(next_x, next_y, x_axis, y_axis)
+      "F" -> [next_x, next_y, _] = Move.move_forward([x, y, orientation])
+             result(next_x, next_y, x_axis, y_axis)
+      "R" -> [next_x, next_y, _] = Move.rotate_right([x, y, orientation])
+             result(next_x, next_y, x_axis, y_axis)
+    end
+    result == :not_lost
+  end
+
+  defp result(x, y, x_axis, y_axis) do
+    if off_grid?(x, y, x_axis, y_axis) do
+      :lost
+    else
+      :not_lost
+    end
+  end
+
+  defp off_grid?(x, y, x_axis, y_axis) do
+    x < 0 || y < 0 || x > x_axis || y > y_axis
   end
 end
