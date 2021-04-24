@@ -16,4 +16,13 @@ defmodule MarsRover do
       :west -> [x, y, :south]
     end
   end
+
+  def rotate_right([x, y, orientation]) do
+    case orientation do
+      :north -> [x, y, :east]
+      :east -> [x, y, :south]
+      :south -> [x, y, :west]
+      :west -> [x, y, :north]
+    end
+  end
 end

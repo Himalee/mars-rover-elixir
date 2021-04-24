@@ -33,4 +33,20 @@ defmodule MarsRoverTest do
   test "rotates west facing robot left by 90 degrees" do
     assert MarsRover.rotate_left([1, 1, :west]) == [1, 1, :south]
   end
+
+  test "rotates north facing robot right by 90 degrees" do
+    assert MarsRover.rotate_right([1, 1, :north]) == [1, 1, :east]
+  end
+
+  test "rotates east facing robot right by 90 degrees" do
+    assert MarsRover.rotate_right([1, 1, :east]) == [1, 1, :south]
+  end
+
+  test "rotates south facing robot right by 90 degrees" do
+    assert MarsRover.rotate_right([1, 1, :south]) == [1, 1, :west]
+  end
+
+  test "rotates west facing robot right by 90 degrees" do
+    assert MarsRover.rotate_right([1, 1, :west]) == [1, 1, :north]
+  end
 end
