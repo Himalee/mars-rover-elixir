@@ -19,5 +19,9 @@ A program that takes in commands and moves one or more robots around Mars.
 #### Improvements
 
 Improve user experience:
-- Display prompts for grid size, initial robots positions and commands, then display final positions
+- Display prompts for grid size, initial robot positions and commands, then display final positions
 - Introduce user input validation
+
+Refactor:
+- The 'Move' methods are called twice per command, once to assess whether the move is valid, and once to return the next position. Look to call once to improve performance.
+- Create a 'PositionValidator' module and extract relevant methods from MarsRover.
