@@ -15,3 +15,9 @@ A program that takes in commands and moves one or more robots around Mars.
 4. Run the test suite by running `$ mix test`
 5. Start the app by running `$ mix start`
 
+
+#### Improvements
+
+Improve user experience:
+- Display prompts for grid size, initial robots positions and commands, then display final positions
+- Introduce user input validation
